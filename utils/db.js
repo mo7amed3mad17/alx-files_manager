@@ -23,8 +23,13 @@ class DBClient {
       });
   }
 
-  isAlive() {
-    return this.client.isConnected();
+  async isAlive() {
+    try {
+      await this.client.db().command({ ping: 1 });
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   async nbUsers() {
