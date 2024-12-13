@@ -12,21 +12,20 @@ class DBClient {
 
     this.client = new MongoClient(url, { useUnifiedTopology: true });
     this.db = null;
-    this.connect();
-  }
 
-  async connect() {
-    try {
-      await this.client.connect();
-      this.db = this.client.db(process.env.DB_DATABASE || 'files_manager');
-      console.log('Connected successfully to MongoDB server');
-    } catch (err) {
-      console.error('MongoDB connection error:', err);
-    }
+    // Connecting MongoClient
+    this.client.connect()
+      .then(() => {
+        this.db = this.client.db(database);
+        console.log('Connected successfully to MongoDB server');
+      })
+      .catch((err) => {
+        console.error('MongoDB connection error:', err);
+      });
   }
 
   isAlive() {
-    return !!this.db && !!this.db.serverConfig.isConnected();
+    return this.db !== null;
   }
 
   async nbUsers() {
